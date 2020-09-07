@@ -9,21 +9,18 @@ const postRouter = require("./routes/postsRoute");
 const userRouter = require("./routes/usersRoute");
 const globalController = require("./controller/errorController");
 const dbConnection = process.env.DATABASE.replace(
-  '<PASSWORD>',
+  "<PASSWORD>",
   process.env.DATABASE_PASSWORD
 );
 
 // Database Connection to MongoDB
 mongoose
-  .connect(
-    dbConnection,
-    {
-      useNewUrlParser: true,
-      useCreateIndex: true,
-      useFindAndModify: true,
-      useUnifiedTopology: true,
-    }
-  )
+  .connect(dbConnection, {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useFindAndModify: true,
+    useUnifiedTopology: true,
+  })
   .then(() => {
     console.log("connection to MongoDB established succesfully");
   })
@@ -38,7 +35,7 @@ app.use(express.json());
 // Allowing the complex request
 app.options("*", cors());
 // to serve the static files and we can uses images
-app.use("/images", express.static(path.join("backend/images")));
+app.use("/images", express.static(path.join("images")));
 
 //Creating the Multer function for the file Upload function
 const MimeType = {

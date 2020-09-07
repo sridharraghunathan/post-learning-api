@@ -1,5 +1,4 @@
 const Post = require("../models/postModel");
-
 const catchAsync = require("../utils/catchAsync");
 const AppErrors = require("../utils/appErrors");
 
@@ -60,33 +59,43 @@ exports.getPost = catchAsync(async (req, res, next) => {
 
 exports.updatePost = catchAsync(async (req, res, next) => {
   const { id } = req.params;
+
   if (req.file) {
     const url = req.protocol + "://" + req.get("host");
     const filewithUrl = url + "/images/" + req.file.filename;
     req.body.imagePath = filewithUrl;
   }
-  const statusUpdate = await Post.findOneAndUpdate(
-    { _id: id, creator: req.userData.userId },
-    req.body
-  );
 
-  if (statusUpdate === null) {
+  const statusFind = await Post.findOne({
+    _id: id,
+    creator: req.userData.userId,
+  });
+
+  if (statusFind === null) {
     return next(
-      new AppErrors("401", "Not Authorized to delete the others Post")
+      new AppErrors("401", "Not Authorized to update the others Post")
     );
   }
+
+  const statusUpdate = await Post.findByIdAndUpdate(req.params.id, req.body);
   res.status(200).json({ status: "success" });
 });
 
 exports.deletePost = catchAsync(async (req, res, next) => {
-  const post = await Post.findOneAndDelete({
+  const statusFind = await Post.findOne({
     _id: req.params.id,
     creator: req.userData.userId,
   });
-  if (post === null) {
+
+  if (statusFind === null) {
     return next(
       new AppErrors("401", "Not Authorized to delete the others Post")
     );
   }
+
+  const post = await Post.findByIdAndDelete({
+    _id: req.params.id,
+  });
+
   res.status(200).json({ status: "success" });
 });

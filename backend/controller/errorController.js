@@ -21,7 +21,6 @@ const handleJwtExpiredrror = (err) =>
   new ApiErrors("401", "Token has been Expired");
 
 const sendErrorDevelopment = (res, req, err) => {
-  console.log("error : ");
   err.statusCode = err.statusCode || 500;
   err.status = err.status || "fail";
   if (req.originalUrl.startsWith("/api")) {
